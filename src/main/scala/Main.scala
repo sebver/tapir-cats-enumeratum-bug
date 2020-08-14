@@ -28,10 +28,37 @@ object Main extends App {
     case object Second extends TestEnum("second")
   }
 
-  val endpoint1 = endpoint.in(jsonBody[WithNel])
-  val endpoint2 = endpoint.in(jsonBody[WithList])
+  val nelEndpoint = endpoint.in(jsonBody[WithNel])
+  val listEndpoint = endpoint.in(jsonBody[WithList])
 
-  println(List(endpoint1).toOpenAPI("api", "1.0").toYaml)
-  println(List(endpoint2).toOpenAPI("api", "1.0").toYaml)
+  println(List(nelEndpoint).toOpenAPI("api", "1.0").toYaml)
+  /* Prints:
+  schemas:
+  WithNel:
+    required:
+    - testEnums
+    type: object
+    properties:
+      testEnums:
+        type: array
+        items:
+          type: string
+        minItems: 1
+   */
+
+  println(List(listEndpoint).toOpenAPI("api", "1.0").toYaml)
+  /* Prints:
+  schemas:
+    WithList:
+      type: object
+      properties:
+        testEnums:
+          type: array
+          items:
+            type: string
+            enum:
+            - first
+            - second
+  */
 
 }
